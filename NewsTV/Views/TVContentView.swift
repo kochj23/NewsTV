@@ -34,13 +34,6 @@ struct TVContentView: View {
                     mainContentView
                 }
 
-                // Breaking news overlay
-                if let breakingNews = newsAggregator.breakingNews().first, !isAmbientMode {
-                    VStack {
-                        BreakingNewsBanner(article: breakingNews)
-                        Spacer()
-                    }
-                }
             }
         }
         .onAppear {
@@ -81,6 +74,11 @@ struct TVContentView: View {
 
     private var mainContentView: some View {
         VStack(spacing: 0) {
+            // Breaking news banner (above category tabs to prevent overlap)
+            if let breakingNews = newsAggregator.breakingNews().first {
+                BreakingNewsBanner(article: breakingNews)
+            }
+
             // Category tabs
             categoryTabBar
 
@@ -177,6 +175,8 @@ struct CategoryTab: View {
     let isSelected: Bool
     let articleCount: Int
 
+    @Environment(\.isFocused) private var isFocused
+
     var body: some View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
@@ -195,6 +195,13 @@ struct CategoryTab: View {
             }
             .font(.system(size: 22, weight: isSelected ? .bold : .medium))
             .foregroundColor(isSelected ? .cyan : .white.opacity(0.7))
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(highlightColor)
+            )
+            .scaleEffect(isFocused ? 1.1 : 1.0)
 
             Rectangle()
                 .fill(isSelected ? Color.cyan : Color.clear)
@@ -202,6 +209,17 @@ struct CategoryTab: View {
                 .cornerRadius(1.5)
         }
         .animation(.easeInOut(duration: 0.2), value: isSelected)
+        .animation(.easeInOut(duration: 0.15), value: isFocused)
+    }
+
+    private var highlightColor: Color {
+        if isFocused {
+            return Color.cyan.opacity(0.4)
+        } else if isSelected {
+            return Color.cyan.opacity(0.15)
+        } else {
+            return Color.clear
+        }
     }
 }
 
