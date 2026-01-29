@@ -21,16 +21,9 @@ import SwiftUI
 
 @main
 struct NewsTVApp: App {
-    @StateObject private var newsAggregator = NewsAggregator.shared
-    @StateObject private var settingsManager = SettingsManager.shared
-    @StateObject private var ttsManager = TTSManager.shared
-
     var body: some Scene {
         WindowGroup {
             TVContentView()
-                .environmentObject(newsAggregator)
-                .environmentObject(settingsManager)
-                .environmentObject(ttsManager)
                 .preferredColorScheme(.dark)
         }
     }

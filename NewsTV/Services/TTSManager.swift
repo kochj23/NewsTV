@@ -25,6 +25,13 @@ class TTSManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
     override private init() {
         super.init()
         synthesizer.delegate = self
+    }
+
+    private var audioSessionConfigured = false
+
+    private func ensureAudioSession() {
+        guard !audioSessionConfigured else { return }
+        audioSessionConfigured = true
         setupAudioSession()
     }
 
@@ -42,6 +49,7 @@ class TTSManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
     // MARK: - Speak Single Article
 
     func speakArticle(_ article: NewsArticle, rate: Float = 0.5) {
+        ensureAudioSession()
         stop()
 
         let text = buildSpeechText(for: article)
@@ -57,6 +65,7 @@ class TTSManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
     // MARK: - Audio Briefing
 
     func startBriefing(articles: [NewsArticle], rate: Float = 0.5, completion: (() -> Void)? = nil) {
+        ensureAudioSession()
         stop()
 
         self.articles = articles

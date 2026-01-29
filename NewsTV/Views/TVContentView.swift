@@ -10,10 +10,9 @@
 import SwiftUI
 
 struct TVContentView: View {
-    @StateObject private var newsAggregator = NewsAggregator.shared
-    @StateObject private var sentimentAnalyzer = SentimentAnalyzer.shared
-    @StateObject private var ttsManager = TTSManager.shared
-    @StateObject private var settingsManager = SettingsManager.shared
+    @ObservedObject private var newsAggregator = NewsAggregator.shared
+    @ObservedObject private var ttsManager = TTSManager.shared
+    @ObservedObject private var settingsManager = SettingsManager.shared
 
     @State private var selectedCategory: NewsCategory = .topStories
     @State private var selectedArticle: NewsArticle?

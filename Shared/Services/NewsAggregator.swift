@@ -30,7 +30,7 @@ class NewsAggregator: ObservableObject {
 
         // US News
         NewsSource(id: "nyt-us", name: "NY Times US", rssURL: URL(string: "https://rss.nytimes.com/services/xml/rss/nyt/US.xml")!, category: .us, bias: .leanLeft, reliability: 0.9),
-        NewsSource(id: "wsj-us", name: "WSJ US", rssURL: URL(string: "https://feeds.a]wsj.com/wsj/xml/rss/3_7011.xml")!, category: .us, bias: .leanRight, reliability: 0.9),
+        NewsSource(id: "wsj-us", name: "WSJ US", rssURL: URL(string: "https://feeds.content.wsj.com/wsj/xml/rss/3_7011.xml")!, category: .us, bias: .leanRight, reliability: 0.9),
 
         // World
         NewsSource(id: "bbc-world", name: "BBC World", rssURL: URL(string: "https://feeds.bbci.co.uk/news/world/rss.xml")!, category: .world, bias: .center, reliability: 0.9),
