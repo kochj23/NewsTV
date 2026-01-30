@@ -305,17 +305,26 @@ struct TVContentView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 16) {
                 ForEach(MainTab.allCases, id: \.self) { tab in
-                    MainTabButton(
-                        tab: tab,
-                        isSelected: selectedMainTab == tab,
-                        badgeCount: badgeCount(for: tab)
-                    )
-                    // .focusable() - disabled for tvOS 26.3 beta
-                    .onTapGesture {
+                    Button {
                         withAnimation(.easeInOut(duration: 0.2)) {
                             selectedMainTab = tab
                         }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: tab.icon)
+                                .font(.system(size: 20))
+                            Text(tab.rawValue)
+                                .font(.system(size: 18, weight: selectedMainTab == tab ? .bold : .medium))
+                        }
+                        .foregroundColor(selectedMainTab == tab ? tab.color : .white.opacity(0.7))
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(selectedMainTab == tab ? tab.color.opacity(0.2) : Color.clear)
+                        )
                     }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, 48)
