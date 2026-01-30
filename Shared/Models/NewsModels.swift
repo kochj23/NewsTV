@@ -124,6 +124,7 @@ struct NewsSource: Codable, Hashable {
 
 enum NewsCategory: String, CaseIterable, Codable {
     case topStories = "Top Stories"
+    case disney = "Disney"
     case us = "US"
     case world = "World"
     case business = "Business"
@@ -137,6 +138,7 @@ enum NewsCategory: String, CaseIterable, Codable {
     var icon: String {
         switch self {
         case .topStories: return "star.fill"
+        case .disney: return "sparkles"
         case .us: return "flag.fill"
         case .world: return "globe"
         case .business: return "chart.line.uptrend.xyaxis"
@@ -152,6 +154,7 @@ enum NewsCategory: String, CaseIterable, Codable {
     var color: String {
         switch self {
         case .topStories: return "FFD700"
+        case .disney: return "1E90FF"
         case .us: return "FF6B6B"
         case .world: return "4ECDC4"
         case .business: return "45B7D1"
@@ -359,6 +362,187 @@ struct AudioBriefing: Identifiable {
     }
 }
 
+// MARK: - Watch Later Item
+
+struct WatchLaterItem: Identifiable, Codable, Hashable {
+    let id: UUID
+    let articleId: UUID
+    let articleTitle: String
+    let articleURL: URL
+    let source: String
+    let category: NewsCategory
+    let addedDate: Date
+    var isCompleted: Bool
+
+    init(from article: NewsArticle) {
+        self.id = UUID()
+        self.articleId = article.id
+        self.articleTitle = article.title
+        self.articleURL = article.url
+        self.source = article.source.name
+        self.category = article.category
+        self.addedDate = Date()
+        self.isCompleted = false
+    }
+}
+
+// MARK: - Keyword Alert
+
+struct KeywordAlert: Identifiable, Codable, Hashable {
+    let id: UUID
+    var keyword: String
+    var isEnabled: Bool
+    var notifyOnMatch: Bool
+    var matchCount: Int
+    var lastMatchDate: Date?
+
+    init(keyword: String) {
+        self.id = UUID()
+        self.keyword = keyword
+        self.isEnabled = true
+        self.notifyOnMatch = true
+        self.matchCount = 0
+        self.lastMatchDate = nil
+    }
+}
+
+// MARK: - Trending Topic
+
+struct TrendingTopic: Identifiable, Hashable {
+    let id: UUID
+    let topic: String
+    let articleCount: Int
+    let sources: [String]
+    let sentiment: Double?
+    let firstSeen: Date
+
+    init(topic: String, articleCount: Int, sources: [String], sentiment: Double? = nil) {
+        self.id = UUID()
+        self.topic = topic
+        self.articleCount = articleCount
+        self.sources = sources
+        self.sentiment = sentiment
+        self.firstSeen = Date()
+    }
+}
+
+// MARK: - User Preference Profile
+
+struct UserPreferenceProfile: Codable {
+    var categoryWeights: [NewsCategory: Double]
+    var sourceWeights: [String: Double]
+    var topicInterests: [String: Double]
+    var readArticleIds: Set<UUID>
+    var viewDurations: [UUID: TimeInterval]
+
+    init() {
+        self.categoryWeights = [:]
+        self.sourceWeights = [:]
+        self.topicInterests = [:]
+        self.readArticleIds = []
+        self.viewDurations = [:]
+    }
+
+    mutating func recordView(article: NewsArticle, duration: TimeInterval) {
+        readArticleIds.insert(article.id)
+        viewDurations[article.id] = duration
+
+        // Boost category weight based on view duration
+        let boost = min(duration / 60.0, 1.0) * 0.1
+        categoryWeights[article.category, default: 0.5] += boost
+        categoryWeights[article.category] = min(categoryWeights[article.category]!, 1.0)
+
+        // Boost source weight
+        sourceWeights[article.source.id, default: 0.5] += boost * 0.5
+        sourceWeights[article.source.id] = min(sourceWeights[article.source.id]!, 1.0)
+    }
+
+    func relevanceScore(for article: NewsArticle) -> Double {
+        let categoryScore = categoryWeights[article.category] ?? 0.5
+        let sourceScore = sourceWeights[article.source.id] ?? 0.5
+        let recencyScore = max(0, 1.0 - (Date().timeIntervalSince(article.publishedDate) / 86400))
+
+        return (categoryScore * 0.4) + (sourceScore * 0.3) + (recencyScore * 0.3)
+    }
+}
+
+// MARK: - Custom RSS Feed
+
+struct CustomRSSFeed: Identifiable, Codable, Hashable {
+    let id: UUID
+    var name: String
+    var url: URL
+    var category: NewsCategory
+    var isEnabled: Bool
+    var lastFetchDate: Date?
+    var articleCount: Int
+
+    init(name: String, url: URL, category: NewsCategory = .topStories) {
+        self.id = UUID()
+        self.name = name
+        self.url = url
+        self.category = category
+        self.isEnabled = true
+        self.lastFetchDate = nil
+        self.articleCount = 0
+    }
+}
+
+// MARK: - Weather Data
+
+struct WeatherData: Codable {
+    let temperature: Double
+    let condition: WeatherCondition
+    let high: Double
+    let low: Double
+    let location: String
+    let lastUpdated: Date
+
+    enum WeatherCondition: String, Codable {
+        case clear = "Clear"
+        case cloudy = "Cloudy"
+        case partlyCloudy = "Partly Cloudy"
+        case rain = "Rain"
+        case snow = "Snow"
+        case thunderstorm = "Thunderstorm"
+        case fog = "Fog"
+        case windy = "Windy"
+        case unknown = "Unknown"
+
+        var icon: String {
+            switch self {
+            case .clear: return "sun.max.fill"
+            case .cloudy: return "cloud.fill"
+            case .partlyCloudy: return "cloud.sun.fill"
+            case .rain: return "cloud.rain.fill"
+            case .snow: return "cloud.snow.fill"
+            case .thunderstorm: return "cloud.bolt.fill"
+            case .fog: return "cloud.fog.fill"
+            case .windy: return "wind"
+            case .unknown: return "questionmark.circle"
+            }
+        }
+    }
+}
+
+// MARK: - Audio Briefing Progress
+
+struct AudioBriefingProgress: Codable {
+    var briefingId: UUID
+    var currentIndex: Int
+    var currentPosition: TimeInterval
+    var lastUpdated: Date
+    var deviceId: String
+
+    init(briefingId: UUID, deviceId: String) {
+        self.briefingId = briefingId
+        self.currentIndex = 0
+        self.currentPosition = 0
+        self.lastUpdated = Date()
+        self.deviceId = deviceId
+    }
+}
+
 // MARK: - App Settings
 
 struct NewsTVSettings: Codable {
@@ -373,6 +557,22 @@ struct NewsTVSettings: Codable {
     var ambientModeEnabled: Bool
     var fontSize: FontSize
 
+    // New settings for features
+    var enablePersonalizedFeed: Bool
+    var enableBackgroundRefresh: Bool
+    var backgroundRefreshInterval: TimeInterval
+    var localNewsLocation: String?
+    var localNewsZipCode: String?
+    var enableWeatherWidget: Bool
+    var temperatureUnit: TemperatureUnit
+    var theme: AppTheme
+    var enableTrendingTicker: Bool
+    var enableiCloudSync: Bool
+    var screensaverIdleTime: TimeInterval
+    var enableScreensaverMode: Bool
+    var keywordAlerts: [KeywordAlert]
+    var customFeeds: [CustomRSSFeed]
+
     init(
         rotationInterval: TimeInterval = 15,
         enableAudioBriefings: Bool = true,
@@ -383,7 +583,21 @@ struct NewsTVSettings: Codable {
         enableSentimentColors: Bool = true,
         enableBiasIndicators: Bool = true,
         ambientModeEnabled: Bool = true,
-        fontSize: FontSize = .large
+        fontSize: FontSize = .large,
+        enablePersonalizedFeed: Bool = true,
+        enableBackgroundRefresh: Bool = true,
+        backgroundRefreshInterval: TimeInterval = 300,
+        localNewsLocation: String? = nil,
+        localNewsZipCode: String? = nil,
+        enableWeatherWidget: Bool = true,
+        temperatureUnit: TemperatureUnit = .fahrenheit,
+        theme: AppTheme = .dark,
+        enableTrendingTicker: Bool = true,
+        enableiCloudSync: Bool = true,
+        screensaverIdleTime: TimeInterval = 300,
+        enableScreensaverMode: Bool = true,
+        keywordAlerts: [KeywordAlert] = [],
+        customFeeds: [CustomRSSFeed] = []
     ) {
         self.rotationInterval = rotationInterval
         self.enableAudioBriefings = enableAudioBriefings
@@ -395,6 +609,20 @@ struct NewsTVSettings: Codable {
         self.enableBiasIndicators = enableBiasIndicators
         self.ambientModeEnabled = ambientModeEnabled
         self.fontSize = fontSize
+        self.enablePersonalizedFeed = enablePersonalizedFeed
+        self.enableBackgroundRefresh = enableBackgroundRefresh
+        self.backgroundRefreshInterval = backgroundRefreshInterval
+        self.localNewsLocation = localNewsLocation
+        self.localNewsZipCode = localNewsZipCode
+        self.enableWeatherWidget = enableWeatherWidget
+        self.temperatureUnit = temperatureUnit
+        self.theme = theme
+        self.enableTrendingTicker = enableTrendingTicker
+        self.enableiCloudSync = enableiCloudSync
+        self.screensaverIdleTime = screensaverIdleTime
+        self.enableScreensaverMode = enableScreensaverMode
+        self.keywordAlerts = keywordAlerts
+        self.customFeeds = customFeeds
     }
 
     enum FontSize: String, Codable, CaseIterable {
@@ -417,5 +645,23 @@ struct NewsTVSettings: Codable {
             case .extraLarge: return 32
             }
         }
+    }
+
+    enum TemperatureUnit: String, Codable, CaseIterable {
+        case fahrenheit = "Fahrenheit"
+        case celsius = "Celsius"
+
+        var symbol: String {
+            switch self {
+            case .fahrenheit: return "°F"
+            case .celsius: return "°C"
+            }
+        }
+    }
+
+    enum AppTheme: String, Codable, CaseIterable {
+        case dark = "Dark"
+        case light = "Light"
+        case auto = "Auto"
     }
 }

@@ -28,6 +28,11 @@ class NewsAggregator: ObservableObject {
         NewsSource(id: "reuters", name: "Reuters", rssURL: URL(string: "https://rsshub.app/reuters/world")!, category: .topStories, bias: .center, reliability: 0.95),
         NewsSource(id: "npr", name: "NPR", rssURL: URL(string: "https://feeds.npr.org/1001/rss.xml")!, category: .topStories, bias: .leanLeft, reliability: 0.9),
 
+        // Disney
+        NewsSource(id: "disney-parks", name: "Disney Parks Blog", rssURL: URL(string: "https://disneyparks.disney.go.com/blog/feed/")!, category: .disney, bias: .center, reliability: 0.9),
+        NewsSource(id: "d23", name: "D23", rssURL: URL(string: "https://d23.com/feed/")!, category: .disney, bias: .center, reliability: 0.9),
+        NewsSource(id: "disney-news-google", name: "Disney News", rssURL: URL(string: "https://news.google.com/rss/search?q=Disney&hl=en-US&gl=US&ceid=US:en")!, category: .disney, bias: .center, reliability: 0.8),
+
         // US News
         NewsSource(id: "nyt-us", name: "NY Times US", rssURL: URL(string: "https://rss.nytimes.com/services/xml/rss/nyt/US.xml")!, category: .us, bias: .leanLeft, reliability: 0.9),
         NewsSource(id: "wsj-us", name: "WSJ US", rssURL: URL(string: "https://feeds.content.wsj.com/wsj/xml/rss/3_7011.xml")!, category: .us, bias: .leanRight, reliability: 0.9),
@@ -90,8 +95,11 @@ class NewsAggregator: ObservableObject {
             }
         }
 
+        // Filter out advertisements and promotional content
+        let filtered = ContentFilter.shared.filterArticles(allArticles)
+
         // Sort by date, breaking news first
-        articles = allArticles.sorted { a, b in
+        articles = filtered.sorted { a, b in
             if a.isBreakingNews != b.isBreakingNews {
                 return a.isBreakingNews
             }

@@ -9,11 +9,49 @@
 
 import SwiftUI
 
+enum MainTab: String, CaseIterable {
+    case news = "News"
+    case forYou = "For You"
+    case local = "Local"
+    case watchLater = "Watch Later"
+    case clusters = "Multi-Source"
+    case alerts = "Alerts"
+    case customFeeds = "My Feeds"
+
+    var icon: String {
+        switch self {
+        case .news: return "newspaper.fill"
+        case .forYou: return "sparkles"
+        case .local: return "location.fill"
+        case .watchLater: return "bookmark.fill"
+        case .clusters: return "square.stack.3d.up"
+        case .alerts: return "bell.badge.fill"
+        case .customFeeds: return "plus.square.on.square"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .news: return .cyan
+        case .forYou: return .purple
+        case .local: return .orange
+        case .watchLater: return .yellow
+        case .clusters: return .green
+        case .alerts: return .red
+        case .customFeeds: return .mint
+        }
+    }
+}
+
 struct TVContentView: View {
     @ObservedObject private var newsAggregator = NewsAggregator.shared
     @ObservedObject private var ttsManager = TTSManager.shared
     @ObservedObject private var settingsManager = SettingsManager.shared
+    @ObservedObject private var screensaverManager = ScreensaverManager.shared
+    @ObservedObject private var backgroundRefresh = BackgroundRefreshManager.shared
+    @ObservedObject private var alertManager = KeywordAlertManager.shared
 
+    @State private var selectedMainTab: MainTab = .news
     @State private var selectedCategory: NewsCategory = .topStories
     @State private var selectedArticle: NewsArticle?
     @State private var showSettings = false
@@ -26,37 +64,93 @@ struct TVContentView: View {
                 // Background gradient
                 backgroundGradient
 
-                if newsAggregator.isLoading && newsAggregator.articles.isEmpty {
+                if screensaverManager.isActive {
+                    ScreensaverView()
+                } else if newsAggregator.isLoading && newsAggregator.articles.isEmpty {
                     loadingView
                 } else if isAmbientMode {
                     AmbientModeView(articles: newsAggregator.topStories(count: 20))
                 } else {
                     mainContentView
                 }
-
             }
         }
         .onAppear {
-            Task {
-                await newsAggregator.fetchAllNews()
-            }
+            setupApp()
         }
         .onPlayPauseCommand {
             toggleAudioBriefing()
         }
+        .onChange(of: selectedMainTab) { _, _ in
+            screensaverManager.resetIdleTimer()
+        }
+        .onChange(of: selectedCategory) { _, _ in
+            screensaverManager.resetIdleTimer()
+        }
+    }
+
+    // MARK: - Setup
+
+    private func setupApp() {
+        Task {
+            await newsAggregator.fetchAllNews()
+
+            // Cluster articles for multi-source view
+            _ = await StoryClusterEngine.shared.clusterArticles(newsAggregator.articles)
+
+            // Analyze trending topics
+            TrendingTopicsEngine.shared.analyzeTrends(from: newsAggregator.articles)
+
+            // Check keyword alerts
+            alertManager.checkAlerts(against: newsAggregator.articles)
+
+            // Fetch weather
+            await WeatherService.shared.fetchWeather()
+
+            // Fetch local news if configured
+            await LocalNewsService.shared.fetchLocalNews()
+
+            // Fetch custom feeds
+            await CustomFeedManager.shared.fetchAllCustomFeeds()
+
+            // Sync from iCloud
+            await WatchLaterManager.shared.syncFromCloud()
+        }
+
+        // Start background refresh
+        backgroundRefresh.startAutoRefresh()
+
+        // Start screensaver idle timer
+        screensaverManager.startIdleTimer()
+
+        // Donate Siri shortcuts
+        SiriIntentsManager.shared.donateShortcuts()
     }
 
     // MARK: - Views
 
     private var backgroundGradient: some View {
-        LinearGradient(
-            colors: [
-                Color(red: 0.05, green: 0.05, blue: 0.12),
-                Color(red: 0.1, green: 0.1, blue: 0.18)
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+        Group {
+            if settingsManager.settings.theme == .light {
+                LinearGradient(
+                    colors: [
+                        Color(red: 0.95, green: 0.95, blue: 0.97),
+                        Color(red: 0.9, green: 0.9, blue: 0.92)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            } else {
+                LinearGradient(
+                    colors: [
+                        Color(red: 0.05, green: 0.05, blue: 0.12),
+                        Color(red: 0.1, green: 0.1, blue: 0.18)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            }
+        }
         .ignoresSafeArea()
     }
 
@@ -74,11 +168,158 @@ struct TVContentView: View {
 
     private var mainContentView: some View {
         VStack(spacing: 0) {
-            // Breaking news banner (above category tabs to prevent overlap)
+            // Top bar with weather and trending
+            topBar
+
+            // Trending ticker
+            TrendingTicker()
+
+            // Breaking news banner
             if let breakingNews = newsAggregator.breakingNews().first {
                 BreakingNewsBanner(article: breakingNews)
             }
 
+            // Main tab bar
+            mainTabBar
+
+            // Content based on selected tab
+            tabContent
+        }
+        .sheet(item: $selectedArticle) { article in
+            ArticleDetailView(article: article)
+        }
+        .sheet(isPresented: $showAudioBriefing) {
+            AudioBriefingView(articles: newsAggregator.topStories(count: 10))
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+        }
+    }
+
+    private var topBar: some View {
+        HStack(spacing: 20) {
+            // App title
+            HStack(spacing: 12) {
+                Image(systemName: "newspaper.fill")
+                    .font(.system(size: 32))
+                    .foregroundColor(.cyan)
+
+                Text("NewsTV")
+                    .font(.system(size: 36, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+            }
+
+            Spacer()
+
+            // Weather widget
+            WeatherWidget()
+
+            // Alert indicator
+            if alertManager.hasNewMatches {
+                Button {
+                    selectedMainTab = .alerts
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "bell.badge.fill")
+                            .foregroundColor(.red)
+                        Text("\(alertManager.totalMatchCount())")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.red.opacity(0.2))
+                    .cornerRadius(16)
+                }
+                .buttonStyle(.plain)
+            }
+
+            // Audio briefing button
+            Button {
+                showAudioBriefing = true
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: ttsManager.isSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2")
+                    Text("Briefing")
+                }
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(.cyan)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(Color.cyan.opacity(0.2))
+                .cornerRadius(20)
+            }
+            .buttonStyle(.plain)
+
+            // Settings button
+            Button {
+                showSettings = true
+            } label: {
+                Image(systemName: "gearshape.fill")
+                    .font(.system(size: 24))
+                    .foregroundColor(.white.opacity(0.7))
+                    .padding(12)
+                    .background(Color.white.opacity(0.1))
+                    .clipShape(Circle())
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 48)
+        .padding(.vertical, 16)
+        .background(Color.black.opacity(0.3))
+    }
+
+    private var mainTabBar: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 16) {
+                ForEach(MainTab.allCases, id: \.self) { tab in
+                    MainTabButton(
+                        tab: tab,
+                        isSelected: selectedMainTab == tab,
+                        badgeCount: badgeCount(for: tab)
+                    )
+                    .focusable()
+                    .onTapGesture {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            selectedMainTab = tab
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 48)
+            .padding(.vertical, 16)
+        }
+        .background(Color.black.opacity(0.2))
+    }
+
+    @ViewBuilder
+    private var tabContent: some View {
+        switch selectedMainTab {
+        case .news:
+            newsTabContent
+
+        case .forYou:
+            ForYouView()
+
+        case .local:
+            LocalNewsView()
+
+        case .watchLater:
+            WatchLaterListView()
+
+        case .clusters:
+            storyClustersView
+
+        case .alerts:
+            KeywordAlertsView()
+
+        case .customFeeds:
+            CustomFeedsView()
+        }
+    }
+
+    private var newsTabContent: some View {
+        VStack(spacing: 0) {
             // Category tabs
             categoryTabBar
 
@@ -95,20 +336,11 @@ struct TVContentView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
-        .sheet(item: $selectedArticle) { article in
-            ArticleDetailView(article: article)
-        }
-        .sheet(isPresented: $showAudioBriefing) {
-            AudioBriefingView(articles: newsAggregator.topStories(count: 10))
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
-        }
     }
 
     private var categoryTabBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 20) {
+            HStack(spacing: 16) {
                 ForEach(NewsCategory.allCases, id: \.self) { category in
                     CategoryTab(
                         category: category,
@@ -122,42 +354,63 @@ struct TVContentView: View {
                         }
                     }
                 }
+            }
+            .padding(.horizontal, 48)
+            .padding(.vertical, 12)
+        }
+        .background(Color.black.opacity(0.15))
+    }
 
-                // Audio briefing button
-                Button {
-                    showAudioBriefing = true
-                } label: {
-                    HStack {
-                        Image(systemName: ttsManager.isSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2")
-                        Text("Audio Briefing")
-                    }
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(.cyan)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 10)
-                    .background(Color.cyan.opacity(0.2))
-                    .cornerRadius(25)
-                }
+    private var storyClustersView: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Header
+            HStack {
+                Image(systemName: "square.stack.3d.up")
+                    .font(.system(size: 28))
+                    .foregroundColor(.green)
 
-                // Settings button
-                Button {
-                    showSettings = true
-                } label: {
-                    Image(systemName: "gearshape.fill")
-                        .font(.system(size: 24))
-                        .foregroundColor(.white.opacity(0.7))
-                        .padding(12)
-                        .background(Color.white.opacity(0.1))
-                        .clipShape(Circle())
-                }
+                Text("Multi-Source Stories")
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(.white)
+
+                Spacer()
+
+                Text("\(StoryClusterEngine.shared.clusters.count) stories from multiple sources")
+                    .font(.system(size: 16))
+                    .foregroundColor(.white.opacity(0.6))
             }
             .padding(.horizontal, 48)
             .padding(.vertical, 20)
+            .background(Color.black.opacity(0.3))
+
+            // Clusters list
+            ScrollView {
+                LazyVStack(spacing: 16) {
+                    ForEach(StoryClusterEngine.shared.clusters) { cluster in
+                        StoryClusterCard(cluster: cluster)
+                            .focusable()
+                    }
+                }
+                .padding(.horizontal, 48)
+                .padding(.vertical, 20)
+            }
         }
-        .background(Color.black.opacity(0.3))
     }
 
-    // MARK: - Actions
+    // MARK: - Helpers
+
+    private func badgeCount(for tab: MainTab) -> Int {
+        switch tab {
+        case .watchLater:
+            return WatchLaterManager.shared.items.count
+        case .alerts:
+            return alertManager.totalMatchCount()
+        case .customFeeds:
+            return CustomFeedManager.shared.customArticles.count
+        default:
+            return 0
+        }
+    }
 
     private func toggleAudioBriefing() {
         if ttsManager.isSpeaking {
@@ -165,6 +418,135 @@ struct TVContentView: View {
         } else if !newsAggregator.articles.isEmpty {
             ttsManager.startBriefing(articles: newsAggregator.topStories(count: 10))
         }
+    }
+}
+
+// MARK: - Main Tab Button
+
+struct MainTabButton: View {
+    let tab: MainTab
+    let isSelected: Bool
+    let badgeCount: Int
+
+    @Environment(\.isFocused) private var isFocused
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: tab.icon)
+                .font(.system(size: 20))
+
+            Text(tab.rawValue)
+                .font(.system(size: 18, weight: isSelected ? .bold : .medium))
+
+            if badgeCount > 0 {
+                Text("\(badgeCount)")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(tab.color)
+                    .cornerRadius(8)
+            }
+        }
+        .foregroundColor(isSelected ? tab.color : .white.opacity(0.7))
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(isSelected || isFocused ? tab.color.opacity(0.2) : Color.clear)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(isSelected ? tab.color : Color.clear, lineWidth: 2)
+        )
+        .scaleEffect(isFocused ? 1.05 : 1.0)
+        .animation(.easeInOut(duration: 0.15), value: isFocused)
+        .animation(.easeInOut(duration: 0.2), value: isSelected)
+    }
+}
+
+// MARK: - Story Cluster Card
+
+struct StoryClusterCard: View {
+    let cluster: StoryCluster
+    @Environment(\.isFocused) private var isFocused
+    @State private var showDetail = false
+
+    var body: some View {
+        Button {
+            showDetail = true
+        } label: {
+            HStack(spacing: 20) {
+                // Bias spectrum indicator
+                VStack(spacing: 4) {
+                    ForEach(biasColors, id: \.self) { color in
+                        Circle()
+                            .fill(color)
+                            .frame(width: 8, height: 8)
+                    }
+                }
+                .padding(.vertical, 8)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(cluster.topic)
+                        .font(.system(size: 26, weight: .bold))
+                        .foregroundColor(.white)
+                        .lineLimit(2)
+
+                    HStack(spacing: 16) {
+                        Label("\(cluster.sourceCount) sources", systemImage: "newspaper")
+                        Label("\(cluster.articleCount) articles", systemImage: "doc.text")
+                        Label(cluster.lastUpdated.formatted(.relative(presentation: .named)), systemImage: "clock")
+                    }
+                    .font(.system(size: 16))
+                    .foregroundColor(.white.opacity(0.6))
+
+                    // Source badges
+                    HStack(spacing: 8) {
+                        ForEach(cluster.articles.prefix(4)) { article in
+                            Text(article.source.name)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color(hex: article.source.bias.color).opacity(0.3))
+                                .cornerRadius(12)
+                        }
+
+                        if cluster.articles.count > 4 {
+                            Text("+\(cluster.articles.count - 4)")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.white.opacity(0.6))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color.white.opacity(0.1))
+                                .cornerRadius(12)
+                        }
+                    }
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 24))
+                    .foregroundColor(.white.opacity(0.5))
+            }
+            .padding(20)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(isFocused ? Color.green.opacity(0.2) : Color.white.opacity(0.08))
+            )
+            .scaleEffect(isFocused ? 1.02 : 1.0)
+        }
+        .buttonStyle(.plain)
+        .sheet(isPresented: $showDetail) {
+            StoryClusterView(cluster: cluster)
+        }
+    }
+
+    private var biasColors: [Color] {
+        let biases = Set(cluster.articles.map { $0.source.bias })
+        return biases.sorted { $0.value < $1.value }.map { Color(hex: $0.color) }
     }
 }
 
@@ -178,45 +560,45 @@ struct CategoryTab: View {
     @Environment(\.isFocused) private var isFocused
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 6) {
             HStack(spacing: 8) {
                 Image(systemName: category.icon)
                 Text(category.rawValue)
 
                 if articleCount > 0 {
                     Text("\(articleCount)")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: 12, weight: .bold))
                         .foregroundColor(.black)
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(isSelected ? Color.cyan : Color.white.opacity(0.5))
-                        .cornerRadius(10)
+                        .cornerRadius(8)
                 }
             }
-            .font(.system(size: 22, weight: isSelected ? .bold : .medium))
+            .font(.system(size: 18, weight: isSelected ? .bold : .medium))
             .foregroundColor(isSelected ? .cyan : .white.opacity(0.7))
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
             .background(
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: 10)
                     .fill(highlightColor)
             )
-            .scaleEffect(isFocused ? 1.1 : 1.0)
+            .scaleEffect(isFocused ? 1.08 : 1.0)
 
             Rectangle()
                 .fill(isSelected ? Color.cyan : Color.clear)
-                .frame(height: 3)
-                .cornerRadius(1.5)
+                .frame(height: 2)
+                .cornerRadius(1)
         }
-        .animation(.easeInOut(duration: 0.2), value: isSelected)
-        .animation(.easeInOut(duration: 0.15), value: isFocused)
+        .animation(.easeInOut(duration: 0.15), value: isSelected)
+        .animation(.easeInOut(duration: 0.12), value: isFocused)
     }
 
     private var highlightColor: Color {
         if isFocused {
-            return Color.cyan.opacity(0.4)
+            return Color.cyan.opacity(0.3)
         } else if isSelected {
-            return Color.cyan.opacity(0.15)
+            return Color.cyan.opacity(0.1)
         } else {
             return Color.clear
         }
