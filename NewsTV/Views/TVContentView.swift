@@ -44,12 +44,13 @@ enum MainTab: String, CaseIterable {
 }
 
 struct TVContentView: View {
-    @ObservedObject private var newsAggregator = NewsAggregator.shared
-    @ObservedObject private var ttsManager = TTSManager.shared
-    @ObservedObject private var settingsManager = SettingsManager.shared
-    @ObservedObject private var screensaverManager = ScreensaverManager.shared
-    @ObservedObject private var backgroundRefresh = BackgroundRefreshManager.shared
-    @ObservedObject private var alertManager = KeywordAlertManager.shared
+    // Defer initialization to avoid crashes on tvOS 26.3 beta
+    @State private var newsAggregator: NewsAggregator?
+    @State private var ttsManager: TTSManager?
+    @State private var settingsManager: SettingsManager?
+    @State private var screensaverManager: ScreensaverManager?
+    @State private var backgroundRefresh: BackgroundRefreshManager?
+    @State private var alertManager: KeywordAlertManager?
 
     @State private var selectedMainTab: MainTab = .news
     @State private var selectedCategory: NewsCategory = .topStories
@@ -57,6 +58,7 @@ struct TVContentView: View {
     @State private var showSettings = false
     @State private var showAudioBriefing = false
     @State private var isAmbientMode = false
+    @State private var isReady = false
 
     var body: some View {
         NavigationStack {
@@ -64,28 +66,58 @@ struct TVContentView: View {
                 // Background gradient
                 backgroundGradient
 
-                if screensaverManager.isActive {
+                if !isReady {
+                    // Simple loading state to test basic rendering
+                    VStack(spacing: 20) {
+                        Image(systemName: "newspaper.fill")
+                            .font(.system(size: 80))
+                            .foregroundColor(.cyan)
+                        Text("NewsTV")
+                            .font(.system(size: 48, weight: .bold))
+                            .foregroundColor(.white)
+                        ProgressView()
+                            .scaleEffect(1.5)
+                    }
+                } else if screensaverManager?.isActive == true {
                     ScreensaverView()
-                } else if newsAggregator.isLoading && newsAggregator.articles.isEmpty {
+                } else if newsAggregator?.isLoading == true && (newsAggregator?.articles.isEmpty ?? true) {
                     loadingView
                 } else if isAmbientMode {
-                    AmbientModeView(articles: newsAggregator.topStories(count: 20))
+                    AmbientModeView(articles: newsAggregator?.topStories(count: 20) ?? [])
                 } else {
                     mainContentView
                 }
             }
         }
-        .onAppear {
+        .task {
+            // Delayed initialization to avoid crashes on tvOS 26.3 beta
+            try? await Task.sleep(for: .seconds(1))
+
+            // Initialize managers with delays between each
+            settingsManager = SettingsManager.shared
+            try? await Task.sleep(for: .seconds(0.2))
+
+            newsAggregator = NewsAggregator.shared
+            try? await Task.sleep(for: .seconds(0.2))
+
+            ttsManager = TTSManager.shared
+            screensaverManager = ScreensaverManager.shared
+            alertManager = KeywordAlertManager.shared
+            try? await Task.sleep(for: .seconds(0.2))
+
+            backgroundRefresh = BackgroundRefreshManager.shared
+
+            isReady = true
             setupApp()
         }
         .onPlayPauseCommand {
             toggleAudioBriefing()
         }
         .onChange(of: selectedMainTab) { _, _ in
-            screensaverManager.resetIdleTimer()
+            screensaverManager?.resetIdleTimer()
         }
         .onChange(of: selectedCategory) { _, _ in
-            screensaverManager.resetIdleTimer()
+            screensaverManager?.resetIdleTimer()
         }
     }
 
@@ -93,16 +125,16 @@ struct TVContentView: View {
 
     private func setupApp() {
         Task {
-            await newsAggregator.fetchAllNews()
+            await newsAggregator?.fetchAllNews()
 
             // Cluster articles for multi-source view
-            _ = await StoryClusterEngine.shared.clusterArticles(newsAggregator.articles)
+            _ = await StoryClusterEngine.shared.clusterArticles(newsAggregator?.articles ?? [])
 
             // Analyze trending topics
-            TrendingTopicsEngine.shared.analyzeTrends(from: newsAggregator.articles)
+            TrendingTopicsEngine.shared.analyzeTrends(from: newsAggregator?.articles ?? [])
 
             // Check keyword alerts
-            alertManager.checkAlerts(against: newsAggregator.articles)
+            alertManager?.checkAlerts(against: newsAggregator?.articles ?? [])
 
             // Fetch weather
             await WeatherService.shared.fetchWeather()
@@ -118,10 +150,10 @@ struct TVContentView: View {
         }
 
         // Start background refresh
-        backgroundRefresh.startAutoRefresh()
+        backgroundRefresh?.startAutoRefresh()
 
         // Start screensaver idle timer
-        screensaverManager.startIdleTimer()
+        screensaverManager?.startIdleTimer()
 
         // Donate Siri shortcuts
         SiriIntentsManager.shared.donateShortcuts()
@@ -131,7 +163,7 @@ struct TVContentView: View {
 
     private var backgroundGradient: some View {
         Group {
-            if settingsManager.settings.theme == .light {
+            if settingsManager?.settings.theme == .light {
                 LinearGradient(
                     colors: [
                         Color(red: 0.95, green: 0.95, blue: 0.97),
@@ -174,22 +206,22 @@ struct TVContentView: View {
             // Trending ticker
             TrendingTicker()
 
-            // Breaking news banner
-            if let breakingNews = newsAggregator.breakingNews().first {
-                BreakingNewsBanner(article: breakingNews)
-            }
+            // Breaking news banner - disabled for tvOS 26.3 beta
+            // if let breakingNews = newsAggregator?.breakingNews().first {
+            //     BreakingNewsBanner(article: breakingNews)
+            // }
 
             // Main tab bar
             mainTabBar
 
-            // Content based on selected tab
-            tabContent
-        }
-        .sheet(item: $selectedArticle) { article in
-            ArticleDetailView(article: article)
-        }
-        .sheet(isPresented: $showAudioBriefing) {
-            AudioBriefingView(articles: newsAggregator.topStories(count: 10))
+            // Static content for tvOS 26.3 beta
+            // Full tabContent crashes on this beta version
+            Text("NewsTV - Loading articles...")
+                .font(.title2)
+                .foregroundColor(.white.opacity(0.7))
+                .padding()
+
+            Spacer()
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()
@@ -215,14 +247,14 @@ struct TVContentView: View {
             WeatherWidget()
 
             // Alert indicator
-            if alertManager.hasNewMatches {
+            if alertManager?.hasNewMatches == true {
                 Button {
                     selectedMainTab = .alerts
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "bell.badge.fill")
                             .foregroundColor(.red)
-                        Text("\(alertManager.totalMatchCount())")
+                        Text("\(alertManager?.totalMatchCount() ?? 0)")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(.white)
                     }
@@ -239,7 +271,7 @@ struct TVContentView: View {
                 showAudioBriefing = true
             } label: {
                 HStack(spacing: 8) {
-                    Image(systemName: ttsManager.isSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2")
+                    Image(systemName: ttsManager?.isSpeaking == true ? "speaker.wave.3.fill" : "speaker.wave.2")
                     Text("Briefing")
                 }
                 .font(.system(size: 18, weight: .semibold))
@@ -278,7 +310,7 @@ struct TVContentView: View {
                         isSelected: selectedMainTab == tab,
                         badgeCount: badgeCount(for: tab)
                     )
-                    .focusable()
+                    // .focusable() - disabled for tvOS 26.3 beta
                     .onTapGesture {
                         withAnimation(.easeInOut(duration: 0.2)) {
                             selectedMainTab = tab
@@ -294,6 +326,13 @@ struct TVContentView: View {
 
     @ViewBuilder
     private var tabContent: some View {
+        // Simplified for tvOS 26.3 beta testing
+        Text("Tab: \(selectedMainTab.rawValue)")
+            .font(.title)
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+        /* Original tab content - crashes on tvOS 26.3 beta
         switch selectedMainTab {
         case .news:
             newsTabContent
@@ -316,6 +355,7 @@ struct TVContentView: View {
         case .customFeeds:
             CustomFeedsView()
         }
+        */
     }
 
     private var newsTabContent: some View {
@@ -328,7 +368,7 @@ struct TVContentView: View {
                 ForEach(NewsCategory.allCases, id: \.self) { category in
                     CategoryNewsView(
                         category: category,
-                        articles: newsAggregator.articles(for: category),
+                        articles: newsAggregator?.articles(for: category) ?? [],
                         selectedArticle: $selectedArticle
                     )
                     .tag(category)
@@ -345,7 +385,7 @@ struct TVContentView: View {
                     CategoryTab(
                         category: category,
                         isSelected: selectedCategory == category,
-                        articleCount: newsAggregator.articles(for: category).count
+                        articleCount: newsAggregator?.articles(for: category).count ?? 0
                     )
                     .focusable()
                     .onTapGesture {
@@ -400,23 +440,27 @@ struct TVContentView: View {
     // MARK: - Helpers
 
     private func badgeCount(for tab: MainTab) -> Int {
+        // Disabled for tvOS 26.3 beta - accessing singletons causes crash
+        return 0
+        /*
         switch tab {
         case .watchLater:
             return WatchLaterManager.shared.items.count
         case .alerts:
-            return alertManager.totalMatchCount()
+            return alertManager?.totalMatchCount() ?? 0
         case .customFeeds:
             return CustomFeedManager.shared.customArticles.count
         default:
             return 0
         }
+        */
     }
 
     private func toggleAudioBriefing() {
-        if ttsManager.isSpeaking {
-            ttsManager.pause()
-        } else if !newsAggregator.articles.isEmpty {
-            ttsManager.startBriefing(articles: newsAggregator.topStories(count: 10))
+        if ttsManager?.isSpeaking == true {
+            ttsManager?.pause()
+        } else if !(newsAggregator?.articles.isEmpty ?? true) {
+            ttsManager?.startBriefing(articles: newsAggregator?.topStories(count: 10) ?? [])
         }
     }
 }
@@ -428,7 +472,7 @@ struct MainTabButton: View {
     let isSelected: Bool
     let badgeCount: Int
 
-    @Environment(\.isFocused) private var isFocused
+    // Removed @Environment(\.isFocused) due to tvOS 26.3 beta crash
 
     var body: some View {
         HStack(spacing: 8) {
@@ -453,14 +497,12 @@ struct MainTabButton: View {
         .padding(.vertical, 12)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(isSelected || isFocused ? tab.color.opacity(0.2) : Color.clear)
+                .fill(isSelected ? tab.color.opacity(0.2) : Color.clear)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .stroke(isSelected ? tab.color : Color.clear, lineWidth: 2)
         )
-        .scaleEffect(isFocused ? 1.05 : 1.0)
-        .animation(.easeInOut(duration: 0.15), value: isFocused)
         .animation(.easeInOut(duration: 0.2), value: isSelected)
     }
 }

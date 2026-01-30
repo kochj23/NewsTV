@@ -9,7 +9,8 @@
 
 import Foundation
 
-actor RSSParser {
+// Changed from actor to class due to tvOS 26.3 beta crash
+class RSSParser: @unchecked Sendable {
     static let shared = RSSParser()
 
     private init() {}
