@@ -22,22 +22,19 @@ class BackgroundRefreshManager: ObservableObject {
     private let taskIdentifier = "com.jordankoch.NewsTV.refresh"
 
     private init() {
-        // Defer BGTask registration to avoid crashes on tvOS 26.3 beta
+        // Disabled for tvOS 26.3 beta - BGTaskScheduler crashes
         // setupBackgroundRefresh()
     }
 
     // MARK: - Setup
 
     private func setupBackgroundRefresh() {
-        // Note: BGTaskScheduler may crash on tvOS 26.3 beta, so this is disabled
-        #if !os(tvOS)
         // Register background task
         BGTaskScheduler.shared.register(forTaskWithIdentifier: taskIdentifier, using: nil) { task in
             Task { @MainActor in
                 await self.handleBackgroundRefresh(task: task as! BGAppRefreshTask)
             }
         }
-        #endif
     }
 
     func startAutoRefresh() {
@@ -112,8 +109,6 @@ class BackgroundRefreshManager: ObservableObject {
     }
 
     private func scheduleNextRefresh() {
-        #if !os(tvOS)
-        // BGTaskScheduler not reliable on tvOS beta
         let request = BGAppRefreshTaskRequest(identifier: taskIdentifier)
         let interval = SettingsManager.shared.settings.backgroundRefreshInterval
         request.earliestBeginDate = Date(timeIntervalSinceNow: interval)
@@ -124,11 +119,6 @@ class BackgroundRefreshManager: ObservableObject {
         } catch {
             print("Failed to schedule background refresh: \(error)")
         }
-        #else
-        // On tvOS, just set next refresh time for display purposes
-        let interval = SettingsManager.shared.settings.backgroundRefreshInterval
-        nextScheduledRefresh = Date(timeIntervalSinceNow: interval)
-        #endif
     }
 
     // MARK: - Manual Refresh

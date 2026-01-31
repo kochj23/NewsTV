@@ -28,11 +28,12 @@ struct ForYouView: View {
             ScrollView {
                 LazyVStack(spacing: 16) {
                     ForEach(personalizedArticles) { article in
-                        PersonalizedArticleCard(article: article)
-                            .focusable()
-                            .onTapGesture {
-                                selectedArticle = article
-                            }
+                        Button {
+                            selectedArticle = article
+                        } label: {
+                            PersonalizedArticleCard(article: article)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal, 48)
@@ -117,7 +118,8 @@ struct ForYouView: View {
 struct PersonalizedArticleCard: View {
     let article: NewsArticle
     @ObservedObject private var personalization = PersonalizationEngine.shared
-    @Environment(\.isFocused) private var isFocused
+    // @Environment(\.isFocused) removed for tvOS 26.3 beta
+    private let isFocused = false
 
     var body: some View {
         HStack(spacing: 20) {

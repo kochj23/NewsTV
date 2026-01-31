@@ -108,15 +108,16 @@ struct KeywordAlertsView: View {
             ScrollView {
                 LazyVStack(spacing: 12) {
                     ForEach(settings.settings.keywordAlerts) { alert in
-                        KeywordAlertRow(
-                            alert: alert,
-                            isSelected: selectedKeyword == alert.keyword,
-                            matchCount: alertManager.articles(for: alert.keyword).count
-                        )
-                        .focusable()
-                        .onTapGesture {
+                        Button {
                             selectedKeyword = alert.keyword
+                        } label: {
+                            KeywordAlertRow(
+                                alert: alert,
+                                isSelected: selectedKeyword == alert.keyword,
+                                matchCount: alertManager.articles(for: alert.keyword).count
+                            )
                         }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal, 16)
@@ -200,7 +201,6 @@ struct KeywordAlertsView: View {
                     LazyVStack(spacing: 12) {
                         ForEach(articles) { article in
                             CompactArticleRow(article: article, highlightKeyword: keyword)
-                                .focusable()
                         }
                     }
                     .padding(.horizontal, 24)
@@ -229,7 +229,8 @@ struct KeywordAlertRow: View {
     let isSelected: Bool
     let matchCount: Int
     @ObservedObject private var alertManager = KeywordAlertManager.shared
-    @Environment(\.isFocused) private var isFocused
+    // @Environment(\.isFocused) removed for tvOS 26.3 beta
+    private let isFocused = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -290,7 +291,8 @@ struct KeywordAlertRow: View {
 struct CompactArticleRow: View {
     let article: NewsArticle
     let highlightKeyword: String
-    @Environment(\.isFocused) private var isFocused
+    // @Environment(\.isFocused) removed for tvOS 26.3 beta
+    private let isFocused = false
 
     var body: some View {
         HStack(spacing: 12) {

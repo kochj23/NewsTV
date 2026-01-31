@@ -97,7 +97,6 @@ struct WatchLaterListView: View {
                     LazyVStack(spacing: 16) {
                         ForEach(watchLater.items) { item in
                             WatchLaterItemRow(item: item)
-                                .focusable()
                         }
                     }
                     .padding(.horizontal, 48)
@@ -148,7 +147,8 @@ struct WatchLaterListView: View {
 struct WatchLaterItemRow: View {
     let item: WatchLaterItem
     @ObservedObject private var watchLater = WatchLaterManager.shared
-    @Environment(\.isFocused) private var isFocused
+    // @Environment(\.isFocused) removed for tvOS 26.3 beta
+    private let isFocused = false
 
     var body: some View {
         HStack(spacing: 16) {

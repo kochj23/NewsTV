@@ -589,7 +589,7 @@ struct NewsTVSettings: Codable {
         backgroundRefreshInterval: TimeInterval = 300,
         localNewsLocation: String? = nil,
         localNewsZipCode: String? = nil,
-        enableWeatherWidget: Bool = false,  // Disabled by default - WeatherKit crashes on tvOS beta
+        enableWeatherWidget: Bool = true,
         temperatureUnit: TemperatureUnit = .fahrenheit,
         theme: AppTheme = .dark,
         enableTrendingTicker: Bool = true,

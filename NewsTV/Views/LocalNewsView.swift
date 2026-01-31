@@ -162,11 +162,12 @@ struct LocalNewsView: View {
         ScrollView {
             LazyVStack(spacing: 16) {
                 ForEach(localNews.localArticles) { article in
-                    ArticleCard(article: article, isFocused: false)
-                        .focusable()
-                        .onTapGesture {
-                            selectedArticle = article
-                        }
+                    Button {
+                        selectedArticle = article
+                    } label: {
+                        ArticleCard(article: article, isFocused: false)
+                    }
+                    .buttonStyle(.card)
                 }
             }
             .padding(.horizontal, 48)

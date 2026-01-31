@@ -99,7 +99,6 @@ struct CustomFeedsView: View {
                     LazyVStack(spacing: 12) {
                         ForEach(settings.settings.customFeeds) { feed in
                             CustomFeedRow(feed: feed)
-                                .focusable()
                         }
                     }
                     .padding(16)
@@ -127,7 +126,6 @@ struct CustomFeedsView: View {
                                 customFeeds.addFeed(name: suggestion.name, url: url, category: suggestion.category)
                             }
                         }
-                        .focusable()
                     }
                 }
                 .padding(.horizontal, 16)
@@ -187,11 +185,12 @@ struct CustomFeedsView: View {
             ScrollView {
                 LazyVStack(spacing: 12) {
                     ForEach(customFeeds.customArticles) { article in
-                        ArticleCard(article: article, isFocused: false)
-                            .focusable()
-                            .onTapGesture {
-                                selectedArticle = article
-                            }
+                        Button {
+                            selectedArticle = article
+                        } label: {
+                            ArticleCard(article: article, isFocused: false)
+                        }
+                        .buttonStyle(.card)
                     }
                 }
                 .padding(.horizontal, 24)
@@ -203,7 +202,8 @@ struct CustomFeedsView: View {
 struct CustomFeedRow: View {
     let feed: CustomRSSFeed
     @ObservedObject private var customFeeds = CustomFeedManager.shared
-    @Environment(\.isFocused) private var isFocused
+    // @Environment(\.isFocused) removed for tvOS 26.3 beta
+    private let isFocused = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -268,7 +268,8 @@ struct SuggestedFeedRow: View {
     let name: String
     let category: NewsCategory
     let action: () -> Void
-    @Environment(\.isFocused) private var isFocused
+    // @Environment(\.isFocused) removed for tvOS 26.3 beta
+    private let isFocused = false
 
     var body: some View {
         Button(action: action) {

@@ -72,14 +72,15 @@ struct StoryClusterView: View {
         ScrollView {
             LazyVStack(spacing: 12) {
                 ForEach(Array(cluster.articles.enumerated()), id: \.element.id) { index, article in
-                    SourceRow(
-                        article: article,
-                        isSelected: index == selectedArticleIndex
-                    )
-                    .focusable()
-                    .onTapGesture {
+                    Button {
                         selectedArticleIndex = index
+                    } label: {
+                        SourceRow(
+                            article: article,
+                            isSelected: index == selectedArticleIndex
+                        )
                     }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(16)
@@ -229,7 +230,8 @@ struct StoryClusterView: View {
 struct SourceRow: View {
     let article: NewsArticle
     let isSelected: Bool
-    @Environment(\.isFocused) private var isFocused
+    // @Environment(\.isFocused) removed for tvOS 26.3 beta
+    private let isFocused = false
 
     var body: some View {
         HStack(spacing: 12) {

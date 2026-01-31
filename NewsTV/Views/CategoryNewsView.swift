@@ -14,8 +14,7 @@ struct CategoryNewsView: View {
     let articles: [NewsArticle]
     @Binding var selectedArticle: NewsArticle?
 
-    @State private var focusedIndex: Int?
-    @FocusState private var focusedArticle: Int?
+    // @FocusState removed for tvOS 26.3 beta compatibility
 
     private let columns = [
         GridItem(.flexible(), spacing: 30),
@@ -35,14 +34,10 @@ struct CategoryNewsView: View {
                         } label: {
                             ArticleCard(
                                 article: articles[index],
-                                isFocused: focusedIndex == index
+                                isFocused: false
                             )
                         }
                         .buttonStyle(.card)
-                        .focused($focusedArticle, equals: index)
-                        .onChange(of: focusedArticle) { _, newValue in
-                            focusedIndex = newValue
-                        }
                     }
                 }
                 .padding(.horizontal, 48)
