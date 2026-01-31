@@ -2,8 +2,9 @@
 //  NewsTVApp.swift
 //  NewsTV
 //
-//  AI-Powered News for Apple TV
+//  AI-Powered News for Apple TV and iPad
 //  Created by Jordan Koch on 2026-01-28.
+//  Updated: 2026-01-31 - Added iPad support with NavigationSplitView
 //  Copyright © 2026 Jordan Koch. All rights reserved.
 //
 //  Features:
@@ -15,6 +16,7 @@
 //  - Multi-category news browsing
 //  - Ambient screensaver mode
 //  - Source bias indicators
+//  - iPad: Sidebar navigation, share sheets, keyboard shortcuts
 //
 
 import SwiftUI
@@ -23,8 +25,17 @@ import SwiftUI
 struct NewsTVApp: App {
     var body: some Scene {
         WindowGroup {
-            TVContentView()
+            contentView
                 .preferredColorScheme(.dark)
         }
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        #if os(iOS)
+        iPadNewsView()
+        #else
+        TVContentView()
+        #endif
     }
 }

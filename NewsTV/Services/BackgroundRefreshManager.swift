@@ -4,6 +4,7 @@
 //
 //  Manages automatic background refresh of news feeds
 //  Created by Jordan Koch on 2026-01-30.
+//  Updated: 2026-01-31 - Enabled BGTaskScheduler for iOS/iPad
 //  Copyright © 2026 Jordan Koch. All rights reserved.
 //
 
@@ -22,8 +23,10 @@ class BackgroundRefreshManager: ObservableObject {
     private let taskIdentifier = "com.jordankoch.NewsTV.refresh"
 
     private init() {
-        // Disabled for tvOS 26.3 beta - BGTaskScheduler crashes
-        // setupBackgroundRefresh()
+        // Enable BGTaskScheduler on iOS (disabled on tvOS 26.3 beta due to crashes)
+        #if os(iOS)
+        setupBackgroundRefresh()
+        #endif
     }
 
     // MARK: - Setup
