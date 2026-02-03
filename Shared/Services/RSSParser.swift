@@ -12,12 +12,20 @@ import Foundation
 class RSSParser: @unchecked Sendable {
     static let shared = RSSParser()
 
-    private init() {}
+    private let session: URLSession
+
+    private init() {
+        // Configure URL session with timeout
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 15  // 15 second timeout per request
+        config.timeoutIntervalForResource = 30 // 30 second total timeout
+        self.session = URLSession(configuration: config)
+    }
 
     // MARK: - Parse Feed
 
     func parseFeed(from source: NewsSource) async throws -> [NewsArticle] {
-        let (data, _) = try await URLSession.shared.data(from: source.rssURL)
+        let (data, _) = try await session.data(from: source.rssURL)
 
         guard let xmlString = String(data: data, encoding: .utf8) else {
             throw RSSError.invalidData

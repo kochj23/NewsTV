@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>StringsTable</key>
+    <string>Root</string>
+    <key>PreferenceSpecifiers</key>
+    <array>
+        <!-- Display Settings -->
+        <dict>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+            <key>Title</key>
+            <string>Display</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Dark Theme</string>
+            <key>Key</key>
+            <string>theme_dark</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Title</key>
+            <string>Font Size</string>
+            <key>Key</key>
+            <string>font_size</string>
+            <key>DefaultValue</key>
+            <string>large</string>
+            <key>Values</key>
+            <array>
+                <string>medium</string>
+                <string>large</string>
+                <string>extraLarge</string>
+            </array>
+            <key>Titles</key>
+            <array>
+                <string>Medium</string>
+                <string>Large</string>
+                <string>Extra Large</string>
+            </array>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Show Sentiment Colors</string>
+            <key>Key</key>
+            <string>enable_sentiment_colors</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Show Bias Indicators</string>
+            <key>Key</key>
+            <string>enable_bias_indicators</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+
+        <!-- News Settings -->
+        <dict>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+            <key>Title</key>
+            <string>News</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Breaking News Alerts</string>
+            <key>Key</key>
+            <string>enable_breaking_news</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Personalized Feed</string>
+            <key>Key</key>
+            <string>enable_personalized_feed</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Trending Ticker</string>
+            <key>Key</key>
+            <string>enable_trending_ticker</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+
+        <!-- Audio Settings -->
+        <dict>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+            <key>Title</key>
+            <string>Audio Briefings</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Enable Audio Briefings</string>
+            <key>Key</key>
+            <string>enable_audio_briefings</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSSliderSpecifier</string>
+            <key>Title</key>
+            <string>Speech Rate</string>
+            <key>Key</key>
+            <string>speech_rate</string>
+            <key>DefaultValue</key>
+            <real>0.5</real>
+            <key>MinimumValue</key>
+            <real>0.1</real>
+            <key>MaximumValue</key>
+            <real>1.0</real>
+        </dict>
+
+        <!-- Weather Settings -->
+        <dict>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+            <key>Title</key>
+            <string>Weather</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Show Weather Widget</string>
+            <key>Key</key>
+            <string>enable_weather_widget</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Title</key>
+            <string>Temperature Unit</string>
+            <key>Key</key>
+            <string>temperature_unit</string>
+            <key>DefaultValue</key>
+            <string>fahrenheit</string>
+            <key>Values</key>
+            <array>
+                <string>fahrenheit</string>
+                <string>celsius</string>
+            </array>
+            <key>Titles</key>
+            <array>
+                <string>Fahrenheit</string>
+                <string>Celsius</string>
+            </array>
+        </dict>
+
+        <!-- Local News -->
+        <dict>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+            <key>Title</key>
+            <string>Local News</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSTextFieldSpecifier</string>
+            <key>Title</key>
+            <string>ZIP Code</string>
+            <key>Key</key>
+            <string>local_news_zipcode</string>
+            <key>KeyboardType</key>
+            <string>NumberPad</string>
+            <key>AutocapitalizationType</key>
+            <string>None</string>
+        </dict>
+
+        <!-- Screensaver -->
+        <dict>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+            <key>Title</key>
+            <string>Screensaver</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Enable Screensaver Mode</string>
+            <key>Key</key>
+            <string>enable_screensaver</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Title</key>
+            <string>Idle Time</string>
+            <key>Key</key>
+            <string>screensaver_idle_time</string>
+            <key>DefaultValue</key>
+            <real>300</real>
+            <key>Values</key>
+            <array>
+                <real>60</real>
+                <real>120</real>
+                <real>300</real>
+                <real>600</real>
+                <real>900</real>
+            </array>
+            <key>Titles</key>
+            <array>
+                <string>1 minute</string>
+                <string>2 minutes</string>
+                <string>5 minutes</string>
+                <string>10 minutes</string>
+                <string>15 minutes</string>
+            </array>
+        </dict>
+
+        <!-- Sync -->
+        <dict>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+            <key>Title</key>
+            <string>Sync</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>iCloud Sync</string>
+            <key>Key</key>
+            <string>enable_icloud_sync</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Background Refresh</string>
+            <key>Key</key>
+            <string>enable_background_refresh</string>
+            <key>DefaultValue</key>
+            <true/>
+        </dict>
+    </array>
+</dict>
+</plist>

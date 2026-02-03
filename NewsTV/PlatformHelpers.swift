@@ -140,6 +140,38 @@ struct AdaptiveGrid {
     }
 }
 
+// MARK: - Card Button Style (tvOS-compatible)
+
+struct NewsCardButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
+extension ButtonStyle where Self == NewsCardButtonStyle {
+    static var newsCard: NewsCardButtonStyle { NewsCardButtonStyle() }
+}
+
+// MARK: - TV Icon Button Style (for toolbar/action buttons on tvOS)
+
+struct TVIconButtonStyle: ButtonStyle {
+    var normalOpacity: Double = 0.7
+    var focusedOpacity: Double = 1.0
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 1.15 : 1.0)
+            .opacity(configuration.isPressed ? focusedOpacity : normalOpacity)
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
+extension ButtonStyle where Self == TVIconButtonStyle {
+    static var tvIcon: TVIconButtonStyle { TVIconButtonStyle() }
+}
+
 // MARK: - Color Extensions
 
 extension Color {

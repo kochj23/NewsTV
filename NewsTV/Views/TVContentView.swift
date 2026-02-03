@@ -56,7 +56,7 @@ struct TVContentView: View {
     @State private var selectedMainTab: MainTab = .news
     @State private var selectedCategory: NewsCategory = .topStories
     @State private var selectedArticle: NewsArticle?
-    @State private var showSettings = false
+    @State private var isInitialLoad = true
 
     var body: some View {
         NavigationStack {
@@ -64,45 +64,29 @@ struct TVContentView: View {
                 // Background gradient
                 backgroundGradient
 
-                if newsAggregator.isLoading && newsAggregator.articles.isEmpty {
+                if isInitialLoad {
                     loadingView
                 } else {
                     mainContentView
                 }
             }
         }
-        .onAppear {
-            setupApp()
+        .task {
+            await runSetup()
         }
     }
 
     // MARK: - Setup
 
-    private func setupApp() {
-        Task {
-            await newsAggregator.fetchAllNews()
+    private func runSetup() async {
+        // Fetch news
+        await newsAggregator.fetchAllNews()
 
-            // Cluster articles for multi-source view
-            _ = await StoryClusterEngine.shared.clusterArticles(newsAggregator.articles)
+        // Fetch local news if ZIP code is configured
+        await LocalNewsService.shared.fetchLocalNews()
 
-            // Analyze trending topics
-            TrendingTopicsEngine.shared.analyzeTrends(from: newsAggregator.articles)
-
-            // Check keyword alerts
-            KeywordAlertManager.shared.checkAlerts(against: newsAggregator.articles)
-
-            // Fetch weather
-            await WeatherService.shared.fetchWeather()
-
-            // Fetch local news if configured
-            await LocalNewsService.shared.fetchLocalNews()
-
-            // Fetch custom feeds
-            await CustomFeedManager.shared.fetchAllCustomFeeds()
-
-            // Sync from iCloud
-            await WatchLaterManager.shared.syncFromCloud()
-        }
+        // Mark initial load complete - this MUST happen to show content
+        isInitialLoad = false
     }
 
     // MARK: - Views
@@ -141,6 +125,10 @@ struct TVContentView: View {
             Text("Loading News...")
                 .font(.system(size: 28, weight: .medium, design: .rounded))
                 .foregroundColor(.white.opacity(0.8))
+
+            Text("Fetching from \(newsAggregator.defaultSources.count) sources")
+                .font(.system(size: 16))
+                .foregroundColor(.white.opacity(0.5))
         }
     }
 
@@ -157,9 +145,6 @@ struct TVContentView: View {
         }
         .sheet(item: $selectedArticle) { article in
             ArticleDetailView(article: article)
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
         }
     }
 
@@ -182,18 +167,10 @@ struct TVContentView: View {
                 .font(.system(size: 18))
                 .foregroundColor(.white.opacity(0.6))
 
-            // Settings button
-            Button {
-                showSettings = true
-            } label: {
-                Image(systemName: "gearshape.fill")
-                    .font(.system(size: 24))
-                    .foregroundColor(.white.opacity(0.7))
-                    .padding(12)
-                    .background(Color.white.opacity(0.1))
-                    .clipShape(Circle())
-            }
-            .buttonStyle(.plain)
+            // Settings are now in Apple TV Settings app
+            Text("Settings in TV Settings")
+                .font(.system(size: 14))
+                .foregroundColor(.white.opacity(0.4))
         }
         .padding(.horizontal, 48)
         .padding(.vertical, 16)

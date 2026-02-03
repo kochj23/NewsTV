@@ -19,7 +19,9 @@ class CloudSyncManager: ObservableObject {
     @Published var syncError: String?
     @Published var isAvailable = false
 
-    private let container = CKContainer(identifier: "iCloud.com.jordankoch.NewsTV")
+    private lazy var container: CKContainer = {
+        CKContainer(identifier: "iCloud.com.jordankoch.NewsTV")
+    }()
     private let recordType = "UserSettings"
     #if os(tvOS)
     private let deviceId = UUID().uuidString  // Use persistent storage for real device ID

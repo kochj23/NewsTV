@@ -18,7 +18,9 @@ class WatchLaterManager: ObservableObject {
     @Published var isSyncing = false
 
     private let localKey = "NewsTV.watchLater"
-    private let container = CKContainer(identifier: "iCloud.com.jordankoch.NewsTV")
+    private lazy var container: CKContainer = {
+        CKContainer(identifier: "iCloud.com.jordankoch.NewsTV")
+    }()
     private let recordType = "WatchLaterItem"
 
     private init() {

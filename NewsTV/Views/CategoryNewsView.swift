@@ -37,7 +37,7 @@ struct CategoryNewsView: View {
                                 isFocused: false
                             )
                         }
-                        .buttonStyle(.card)
+                        .buttonStyle(.newsCard)
                     }
                 }
                 .padding(.horizontal, 48)

@@ -190,7 +190,7 @@ struct CustomFeedsView: View {
                         } label: {
                             ArticleCard(article: article, isFocused: false)
                         }
-                        .buttonStyle(.card)
+                        .buttonStyle(.newsCard)
                     }
                 }
                 .padding(.horizontal, 24)
