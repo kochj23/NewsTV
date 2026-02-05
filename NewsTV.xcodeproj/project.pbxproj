@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		011780C9AA84E120000E580C /* StoryClusterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0CAA83ABD2B25FEE4F90DF /* StoryClusterView.swift */; };
 		05278B64DFA277D1BBE0B42D /* NewsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0AAFB62A8FB29A872CCDD2 /* NewsModels.swift */; };
+		0B91FC0F69A2ACE4F65809E7 /* TVServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 106D95BB1F499E82BD9E1652 /* TVServices.framework */; };
 		14D58EE031F12648445A2ED8 /* iPadNewsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FCF3E915547F16D1A10DA6 /* iPadNewsView.swift */; };
 		177289FFBA4693A9DC0AE4AC /* StoryClusterEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3B715EC1E7A711A528DEAE /* StoryClusterEngine.swift */; };
 		247B410D3242B418C1710F82 /* ContentFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61913885193A9BAB92BC62C4 /* ContentFilter.swift */; };
@@ -35,10 +36,13 @@
 		9B3D665948278A83376FFC00 /* TTSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7148F4A52E421F4E4B0FF892 /* TTSManager.swift */; };
 		9D3297FFA9912CBF652FF72C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD19B8ABDCA6E2B3587577C /* SettingsView.swift */; };
 		A00131B450917F7567425E2E /* ImageAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C5CEAFEE2B3D30F723316F /* ImageAnalyzer.swift */; };
+		A55D03B8AF927BFE963D51DD /* NewsTVTopShelf in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 4B2CA45A924DF6EA38689AEF /* NewsTVTopShelf */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A90640E7C6C2F26997E73D1C /* ContentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1073C09A320E116F73867669 /* ContentProvider.swift */; };
 		AE862DE503C26C2A2E7D09BB /* SentimentAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2851F9DA9AA5D229A1FD0DF3 /* SentimentAnalyzer.swift */; };
 		B580F614583CA979A2FF5C9B /* SiriIntentsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF907A79BFD1C3128645E9 /* SiriIntentsManager.swift */; };
 		BA94A29135B4BB93E333560C /* CloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B4CD3CD8F556F0FBDE96CF /* CloudSyncManager.swift */; };
 		BC7DF6DB984965994A0BDF4C /* PlatformHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB94A69376B5C129C8F06E0 /* PlatformHelpers.swift */; };
+		BC7FFFAA5759D172AF12421A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D02010EA47C478768603B84 /* Foundation.framework */; };
 		C0D6EE25477958BB32D69FF0 /* TrendingTopicsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF19D7B06439C0DAE534B1 /* TrendingTopicsEngine.swift */; };
 		C95C2EF4DA29C49685920EEE /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF799770FAFF92CAE707726C /* TVContentView.swift */; };
 		DAA744A03789BC7FBF29EDBF /* NewsTVApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14A746CC0BFDA974B7E3BDD /* NewsTVApp.swift */; };
@@ -52,12 +56,38 @@
 		F9F1946863B98A02E3880A14 /* TrendingTicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B92FDE6743EB460A6768674 /* TrendingTicker.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		CB1A3B2F2653068ACC99C9A4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3882BE1598A772E0D7599F40 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7B8F799E0225BF1A50283E39;
+			remoteInfo = NewsTVTopShelf;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A7896B1D6D63615B5A44C77D /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A55D03B8AF927BFE963D51DD /* NewsTVTopShelf in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		03AF2FAA0ED2BBFE7C7E6433 /* WeatherWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherWidget.swift; sourceTree = "<group>"; };
 		0490F005D7A966166751C74B /* KeywordAlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeywordAlertManager.swift; sourceTree = "<group>"; };
 		06EF907A79BFD1C3128645E9 /* SiriIntentsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriIntentsManager.swift; sourceTree = "<group>"; };
 		0CD19B8ABDCA6E2B3587577C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		0D41EE67E3017A9D95B2B464 /* ForYouView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForYouView.swift; sourceTree = "<group>"; };
+		106D95BB1F499E82BD9E1652 /* TVServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TVServices.framework; path = System/Library/Frameworks/TVServices.framework; sourceTree = SDKROOT; };
+		1073C09A320E116F73867669 /* ContentProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentProvider.swift; sourceTree = "<group>"; };
 		15D74F1FA869A00F20BA2701 /* RSSParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSParser.swift; sourceTree = "<group>"; };
 		2851F9DA9AA5D229A1FD0DF3 /* SentimentAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentimentAnalyzer.swift; sourceTree = "<group>"; };
 		2ABE873DC36D28B0F7BD2B30 /* PersonalizationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizationEngine.swift; sourceTree = "<group>"; };
@@ -69,9 +99,11 @@
 		3A558AB8199142F0E9BAB21F /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		3AF581CC1A457FE9F560BAF3 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshManager.swift; sourceTree = "<group>"; };
 		3DDD7A567A6FB99C63D0F1BE /* WatchLaterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchLaterManager.swift; sourceTree = "<group>"; };
+		4B2CA45A924DF6EA38689AEF /* NewsTVTopShelf */ = {isa = PBXFileReference; includeInIndex = 0; path = NewsTVTopShelf; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EC262479816098AE41E88E5 /* AudioBriefingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBriefingView.swift; sourceTree = "<group>"; };
 		50B4CD3CD8F556F0FBDE96CF /* CloudSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncManager.swift; sourceTree = "<group>"; };
 		596CDB4FCEDF9D9947E6407A /* ScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreensaverView.swift; sourceTree = "<group>"; };
+		5D02010EA47C478768603B84 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		61913885193A9BAB92BC62C4 /* ContentFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentFilter.swift; sourceTree = "<group>"; };
 		7148F4A52E421F4E4B0FF892 /* TTSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSManager.swift; sourceTree = "<group>"; };
 		71B47134C5ABF03F3C1247E6 /* CustomFeedsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFeedsView.swift; sourceTree = "<group>"; };
@@ -80,7 +112,9 @@
 		AA3B715EC1E7A711A528DEAE /* StoryClusterEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryClusterEngine.swift; sourceTree = "<group>"; };
 		AE4C59FC08BC2F0CA789D137 /* NewsTV.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = NewsTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFE8E953E605DC556BA765E1 /* ScreensaverManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreensaverManager.swift; sourceTree = "<group>"; };
+		BC86361562D9EB8C5AD3CEC2 /* NewsTVTopShelf.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = NewsTVTopShelf.entitlements; sourceTree = "<group>"; };
 		BD6670D1F4A238383EA3733F /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
+		C3137ECCB5B262B1D6E13574 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C39C8510E4009A3552FC8D13 /* ArticleCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleCard.swift; sourceTree = "<group>"; };
 		C55E8EA9ED57CACC1AF36823 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C699E934D7B3244AFDEA33FD /* ArticleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDetailView.swift; sourceTree = "<group>"; };
@@ -98,6 +132,18 @@
 		F3C5CEAFEE2B3D30F723316F /* ImageAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAnalyzer.swift; sourceTree = "<group>"; };
 		FD0AAFB62A8FB29A872CCDD2 /* NewsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D142DB80D4879727685D5B9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC7FFFAA5759D172AF12421A /* Foundation.framework in Frameworks */,
+				0B91FC0F69A2ACE4F65809E7 /* TVServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		25F251281102FB1598895CCD /* Services */ = {
@@ -135,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				AE4C59FC08BC2F0CA789D137 /* NewsTV.app */,
+				4B2CA45A924DF6EA38689AEF /* NewsTVTopShelf */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -176,6 +223,17 @@
 			path = ML;
 			sourceTree = "<group>";
 		};
+		74B1431277EEA23531E9D9B0 /* NewsTVTopShelf */ = {
+			isa = PBXGroup;
+			children = (
+				1073C09A320E116F73867669 /* ContentProvider.swift */,
+				C3137ECCB5B262B1D6E13574 /* Info.plist */,
+				BC86361562D9EB8C5AD3CEC2 /* NewsTVTopShelf.entitlements */,
+			);
+			name = NewsTVTopShelf;
+			path = NewsTVTopShelf;
+			sourceTree = "<group>";
+		};
 		75FA2A681165DC536E802F52 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -203,6 +261,8 @@
 				E1CF3F8C1B3BE3EF9C514BAD /* NewsTV */,
 				B7DB0F119EE519D57EEB99E8 /* Shared */,
 				436D5D748752707DB2F8F1CF /* Products */,
+				E0A7880D009BF408855E986F /* Frameworks */,
+				74B1431277EEA23531E9D9B0 /* NewsTVTopShelf */,
 			);
 			sourceTree = "<group>";
 		};
@@ -214,6 +274,23 @@
 				28D5B2D88B8D3F4780518D56 /* Services */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		D624D339E9522194195B0D4A /* tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				5D02010EA47C478768603B84 /* Foundation.framework */,
+			);
+			name = tvOS;
+			sourceTree = "<group>";
+		};
+		E0A7880D009BF408855E986F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D624D339E9522194195B0D4A /* tvOS */,
+				106D95BB1F499E82BD9E1652 /* TVServices.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		E1CF3F8C1B3BE3EF9C514BAD /* NewsTV */ = {
@@ -241,20 +318,37 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		7B8F799E0225BF1A50283E39 /* NewsTVTopShelf */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DDF0830953C42D75758400DC /* Build configuration list for PBXNativeTarget "NewsTVTopShelf" */;
+			buildPhases = (
+				C998D274F155D33A5D77F45C /* Sources */,
+				D142DB80D4879727685D5B9A /* Frameworks */,
+				D8A46C6CB9644DF6B5477C52 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NewsTVTopShelf;
+			productName = NewsTVTopShelf;
+			productReference = 4B2CA45A924DF6EA38689AEF /* NewsTVTopShelf */;
+			productType = "com.apple.product-type.tv-app-extension";
+		};
 		E81C1DA26562BDC9236FEC1D /* NewsTV */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C7DE0D2D80586A8D4ED3DE6 /* Build configuration list for PBXNativeTarget "NewsTV" */;
 			buildPhases = (
 				B8AB324FC4586C646086A2D2 /* Sources */,
 				BC340E86A2065DA9C5513436 /* Resources */,
+				A7896B1D6D63615B5A44C77D /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AD806219285B09BE82118DA0 /* PBXTargetDependency */,
 			);
 			name = NewsTV;
-			packageProductDependencies = (
-			);
 			productName = NewsTV;
 			productReference = AE4C59FC08BC2F0CA789D137 /* NewsTV.app */;
 			productType = "com.apple.product-type.application";
@@ -285,10 +379,12 @@
 			mainGroup = 888CCD89A49BA1562D7A7E14;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
+			productRefGroup = 436D5D748752707DB2F8F1CF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				E81C1DA26562BDC9236FEC1D /* NewsTV */,
+				7B8F799E0225BF1A50283E39 /* NewsTVTopShelf */,
 			);
 		};
 /* End PBXProject section */
@@ -300,6 +396,13 @@
 			files = (
 				F86D1AB3A80722BFD419766D /* Assets.xcassets in Resources */,
 				52208B648C73D8ABACEC1E0D /* Settings.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D8A46C6CB9644DF6B5477C52 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,7 +457,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C998D274F155D33A5D77F45C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A90640E7C6C2F26997E73D1C /* ContentProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AD806219285B09BE82118DA0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = NewsTVTopShelf;
+			target = 7B8F799E0225BF1A50283E39 /* NewsTVTopShelf */;
+			targetProxy = CB1A3B2F2653068ACC99C9A4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		07BBD6CF3988771EC74E0103 /* Debug */ = {
@@ -429,6 +549,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = NewsTV/NewsTV.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = NewsTV;
@@ -443,6 +564,57 @@
 				SDKROOT = appletvos;
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
 				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+			};
+			name = Debug;
+		};
+		5B93329ED98B49DB07CC9872 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NewsTVTopShelf/NewsTVTopShelf.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = QRRCB8HB3W;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NewsTVTopShelf/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jordankoch.NewsTV.topshelf;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BB31F94BAF7867244CBA2B63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NewsTVTopShelf/NewsTVTopShelf.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = QRRCB8HB3W;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NewsTVTopShelf/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jordankoch.NewsTV.topshelf;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 17.0;
 			};
@@ -513,6 +685,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = NewsTV/NewsTV.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = NewsTV;
@@ -552,6 +725,15 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
+		};
+		DDF0830953C42D75758400DC /* Build configuration list for PBXNativeTarget "NewsTVTopShelf" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5B93329ED98B49DB07CC9872 /* Release */,
+				BB31F94BAF7867244CBA2B63 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
