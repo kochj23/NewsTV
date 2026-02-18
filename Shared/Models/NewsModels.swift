@@ -124,7 +124,6 @@ struct NewsSource: Codable, Hashable {
 
 enum NewsCategory: String, CaseIterable, Codable {
     case topStories = "Top Stories"
-    case disney = "Disney"
     case us = "US"
     case world = "World"
     case business = "Business"
@@ -138,7 +137,6 @@ enum NewsCategory: String, CaseIterable, Codable {
     var icon: String {
         switch self {
         case .topStories: return "star.fill"
-        case .disney: return "sparkles"
         case .us: return "flag.fill"
         case .world: return "globe"
         case .business: return "chart.line.uptrend.xyaxis"
@@ -154,7 +152,6 @@ enum NewsCategory: String, CaseIterable, Codable {
     var color: String {
         switch self {
         case .topStories: return "FFD700"
-        case .disney: return "1E90FF"
         case .us: return "FF6B6B"
         case .world: return "4ECDC4"
         case .business: return "45B7D1"
