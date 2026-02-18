@@ -136,7 +136,7 @@ struct KeywordAlertsView: View {
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(.white.opacity(0.7))
 
-            let suggestions = ["Apple", "Tesla", "AI", "Climate", "Elections", "Disney", "SpaceX", "Bitcoin"]
+            let suggestions = ["Apple", "Tesla", "AI", "Climate", "Elections", "Entertainment", "SpaceX", "Bitcoin"]
 
             FlowLayout(spacing: 8) {
                 ForEach(suggestions, id: \.self) { keyword in
