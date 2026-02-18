@@ -1,5 +1,7 @@
 # NewsTV - AI-Powered News for Apple TV
 
+![Build](https://github.com/kochj23/NewsTV/actions/workflows/build.yml/badge.svg)
+
 **On-Device Machine Learning News Reader with Sentiment Analysis, Multi-Source Comparison, and Smart Personalization**
 
 ![Platform](https://img.shields.io/badge/platform-tvOS%2017.0%2B-blue)
