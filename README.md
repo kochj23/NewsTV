@@ -38,7 +38,6 @@ Built as a companion to the macOS News Summary app, NewsTV is optimized for the 
 | **Content Filter** | Automatically removes advertisements and sponsored content |
 | **Background Auto-Refresh** | News updates automatically in the background |
 | **iCloud Sync** | Settings and reading progress sync across Apple TVs |
-| **Disney Category** | Dedicated Disney news from Parks Blog, D23, and more |
 
 ---
 
@@ -59,7 +58,6 @@ Built as a companion to the macOS News Summary app, NewsTV is optimized for the 
 
 ### TV-Optimized Features
 
-- **Multi-Category News Browser** - Top Stories, Disney, US, World, Business, Technology, Science, Health, Sports, Entertainment, Politics
 - **For You Personalized Feed** - AI-curated articles based on your viewing habits
 - **Watch Later Queue** - Save articles to read later, synced via iCloud
 - **Multi-Source Comparison** - See how different outlets cover the same story
@@ -319,7 +317,6 @@ NewsTV/
 | Category | Sources |
 |----------|---------|
 | **Top Stories** | Associated Press, Reuters, NPR |
-| **Disney** | Disney Parks Blog, D23, Google News Disney |
 | **US** | NY Times, WSJ |
 | **World** | BBC, The Guardian |
 | **Technology** | TechCrunch, Ars Technica, The Verge |
@@ -417,7 +414,6 @@ NewsTV respects your privacy:
 - Added screensaver mode
 - Added content filtering (removes ads)
 - Added background auto-refresh
-- Added Disney category
 - Added iCloud settings sync
 - Improved UI with new tab-based navigation
 
