@@ -28,8 +28,6 @@ class NewsAggregator: ObservableObject {
         NewsSource(id: "abc-news", name: "ABC News", rssURL: URL(string: "https://abcnews.go.com/abcnews/topstories")!, category: .topStories, bias: .center, reliability: 0.85),
         NewsSource(id: "cbs-news", name: "CBS News", rssURL: URL(string: "https://www.cbsnews.com/latest/rss/main")!, category: .topStories, bias: .center, reliability: 0.85),
 
-        // Disney
-        NewsSource(id: "disney-news-google", name: "Disney News", rssURL: URL(string: "https://news.google.com/rss/search?q=Disney&hl=en-US&gl=US&ceid=US:en")!, category: .disney, bias: .center, reliability: 0.8),
 
         // US News
         NewsSource(id: "nyt-us", name: "NY Times US", rssURL: URL(string: "https://rss.nytimes.com/services/xml/rss/nyt/US.xml")!, category: .us, bias: .leanLeft, reliability: 0.9),
