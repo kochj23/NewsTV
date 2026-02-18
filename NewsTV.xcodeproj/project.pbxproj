@@ -44,7 +44,9 @@
 		BC7DF6DB984965994A0BDF4C /* PlatformHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB94A69376B5C129C8F06E0 /* PlatformHelpers.swift */; };
 		BC7FFFAA5759D172AF12421A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D02010EA47C478768603B84 /* Foundation.framework */; };
 		C0D6EE25477958BB32D69FF0 /* TrendingTopicsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF19D7B06439C0DAE534B1 /* TrendingTopicsEngine.swift */; };
+		C6931B7E937B88595567C067 /* AIBackendManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF8A400D28C3491AA97230F /* AIBackendManager.swift */; };
 		C95C2EF4DA29C49685920EEE /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF799770FAFF92CAE707726C /* TVContentView.swift */; };
+		C97062B30B2AC4E64589F684 /* AIBackendStatusMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234E6EFE1DAD62162A4D28C3 /* AIBackendStatusMenu.swift */; };
 		DAA744A03789BC7FBF29EDBF /* NewsTVApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14A746CC0BFDA974B7E3BDD /* NewsTVApp.swift */; };
 		E1847B21677159ABF677924E /* WatchLaterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39164F444D7A20CCD3BC6A00 /* WatchLaterButton.swift */; };
 		E480BFA41C2ACD4523D11D35 /* AmbientModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB34AB6AFE92FC61CA6E77B /* AmbientModeView.swift */; };
@@ -89,9 +91,11 @@
 		106D95BB1F499E82BD9E1652 /* TVServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TVServices.framework; path = System/Library/Frameworks/TVServices.framework; sourceTree = SDKROOT; };
 		1073C09A320E116F73867669 /* ContentProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentProvider.swift; sourceTree = "<group>"; };
 		15D74F1FA869A00F20BA2701 /* RSSParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSParser.swift; sourceTree = "<group>"; };
+		234E6EFE1DAD62162A4D28C3 /* AIBackendStatusMenu.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AIBackendStatusMenu.swift; path = Shared/Models/AIBackendStatusMenu.swift; sourceTree = "<group>"; };
 		2851F9DA9AA5D229A1FD0DF3 /* SentimentAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentimentAnalyzer.swift; sourceTree = "<group>"; };
 		2ABE873DC36D28B0F7BD2B30 /* PersonalizationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizationEngine.swift; sourceTree = "<group>"; };
 		2B92FDE6743EB460A6768674 /* TrendingTicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingTicker.swift; sourceTree = "<group>"; };
+		2CF8A400D28C3491AA97230F /* AIBackendManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AIBackendManager.swift; path = Shared/Models/AIBackendManager.swift; sourceTree = "<group>"; };
 		2D1B7A71F1AF11EB52DD1612 /* BreakingNewsBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakingNewsBanner.swift; sourceTree = "<group>"; };
 		2E0CAA83ABD2B25FEE4F90DF /* StoryClusterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryClusterView.swift; sourceTree = "<group>"; };
 		34D983264529295A49BAFD93 /* LocalNewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNewsView.swift; sourceTree = "<group>"; };
@@ -146,6 +150,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07DE0F201D3B810CC0AD41EE /* AIBackend */ = {
+			isa = PBXGroup;
+			children = (
+				2CF8A400D28C3491AA97230F /* AIBackendManager.swift */,
+				234E6EFE1DAD62162A4D28C3 /* AIBackendStatusMenu.swift */,
+			);
+			name = AIBackend;
+			sourceTree = "<group>";
+		};
 		25F251281102FB1598895CCD /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -263,6 +276,7 @@
 				436D5D748752707DB2F8F1CF /* Products */,
 				E0A7880D009BF408855E986F /* Frameworks */,
 				74B1431277EEA23531E9D9B0 /* NewsTVTopShelf */,
+				07DE0F201D3B810CC0AD41EE /* AIBackend */,
 			);
 			sourceTree = "<group>";
 		};
@@ -454,6 +468,8 @@
 				65F9CB3971C04DB1C8EE4710 /* WeatherService.swift in Sources */,
 				644B9B4C7AB06A081D7DFD1B /* WeatherWidget.swift in Sources */,
 				14D58EE031F12648445A2ED8 /* iPadNewsView.swift in Sources */,
+				C6931B7E937B88595567C067 /* AIBackendManager.swift in Sources */,
+				C97062B30B2AC4E64589F684 /* AIBackendStatusMenu.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -546,7 +562,7 @@
 		38EFAD6FA313D71892073D8A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = NewsTV/NewsTV.entitlements;
@@ -682,7 +698,7 @@
 		FF80A11AB12FA3D39F7D7945 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = NewsTV/NewsTV.entitlements;
