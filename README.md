@@ -377,6 +377,18 @@ Add any RSS feed from:
 
 ---
 
+## Security
+
+NewsTV follows secure coding practices:
+
+- **Safe type casting** - All background task handlers use guard-let safe casting instead of force casts, preventing potential runtime crashes from unexpected task types
+- **JavaScript disabled** - No web content execution (tvOS limitation, but also a security benefit)
+- **No external dependencies** - Uses only Apple first-party frameworks
+- **Input validation** - RSS feed parsing validates all input data
+- **No credential storage** - No API keys, tokens, or passwords required
+
+---
+
 ## Privacy
 
 NewsTV respects your privacy:

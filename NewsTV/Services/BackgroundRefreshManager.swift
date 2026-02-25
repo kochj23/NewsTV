@@ -35,7 +35,11 @@ class BackgroundRefreshManager: ObservableObject {
         // Register background task
         BGTaskScheduler.shared.register(forTaskWithIdentifier: taskIdentifier, using: nil) { task in
             Task { @MainActor in
-                await self.handleBackgroundRefresh(task: task as! BGAppRefreshTask)
+                guard let refreshTask = task as? BGAppRefreshTask else {
+                    task.setTaskCompleted(success: false)
+                    return
+                }
+                await self.handleBackgroundRefresh(task: refreshTask)
             }
         }
     }
