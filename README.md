@@ -14,7 +14,7 @@
 
 ## Overview
 
-NewsTV brings AI-powered news analysis to your Apple TV. Using Apple's on-device machine learning frameworks (NaturalLanguage, Vision, Core ML), it provides real-time sentiment analysis, named entity recognition, multi-source story comparison, and intelligent text-to-speech briefings - all without requiring cloud services.
+NewsTV brings AI-powered news analysis to your Apple TV. Using Apple's on-device ML (Machine Learning) frameworks (NaturalLanguage, Vision, Core ML), it provides real-time sentiment analysis, named entity recognition, multi-source story comparison, and intelligent text-to-speech briefings - all without requiring cloud services.
 
 Built as a companion to the macOS News Summary app, NewsTV is optimized for the lean-back, 10-foot viewing experience of your living room.
 
@@ -31,7 +31,7 @@ Built as a companion to the macOS News Summary app, NewsTV is optimized for the 
 | **Multi-Source Story View** | Compare how different sources cover the same story with bias analysis |
 | **Local News** | Enter your ZIP code or city to see local news |
 | **Keyword Alerts** | Get notified when specific topics appear in the news |
-| **Custom RSS Feeds** | Add your own RSS feeds to the app |
+| **Custom RSS (Really Simple Syndication) Feeds** | Add your own RSS feeds to the app |
 | **Weather Widget** | Current weather conditions in your location |
 | **Trending Topics Bar** | See what's trending across all news sources |
 | **Screensaver Mode** | Beautiful rotating headlines when idle |
@@ -54,7 +54,7 @@ Built as a companion to the macOS News Summary app, NewsTV is optimized for the 
 | **Personalization Engine** | Core ML | Learns your preferences over time |
 | **Image Classification** | Vision | Analyzes news article images |
 | **Face Detection** | Vision | Detects faces in news photos |
-| **Text Recognition** | Vision | OCR for text in images |
+| **Text Recognition** | Vision | OCR (Optical Character Recognition) for text in images |
 
 ### TV-Optimized Features
 
@@ -100,7 +100,7 @@ Built as a companion to the macOS News Summary app, NewsTV is optimized for the 
 - Cluster related stories from multiple sources
 
 **AI Analysis**
-- Analyze sentiment of headlines using on-device NLP
+- Analyze sentiment of headlines using on-device NLP (Natural Language Processing)
 - Extract entities (people, organizations, places) from articles
 - Identify trending topics across all feeds
 - Learn your preferences to personalize your feed
@@ -267,7 +267,7 @@ NewsTV/
 └── NewsTV/
     ├── ML/
     │   ├── SentimentAnalyzer.swift    # NaturalLanguage sentiment
-    │   ├── EntityExtractor.swift      # NaturalLanguage NER
+    │   ├── EntityExtractor.swift      # NaturalLanguage NER (Named Entity Recognition)
     │   └── ImageAnalyzer.swift        # Vision framework
     │
     ├── Services/
@@ -433,7 +433,7 @@ NewsTV respects your privacy:
 - Initial release
 - On-device sentiment analysis
 - Named entity recognition
-- Audio briefings with TTS
+- Audio briefings with TTS (Text-to-Speech)
 - Source bias indicators
 - Breaking news alerts
 - Ambient mode
@@ -448,7 +448,7 @@ NewsTV respects your privacy:
 
 ## Contributing
 
-Contributions welcome! Please read the contributing guidelines before submitting PRs.
+Contributions welcome! Please read the contributing guidelines before submitting PRs (Pull Requests).
 
 ---
 
