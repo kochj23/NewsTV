@@ -43,7 +43,9 @@ class NovaAPIServer {
         }
     }
     private func route(_ req: NovaRequest) async -> String {
-        if req.method == "OPTIONS" { return http(200, "") }
+        // Loopback-only: reject non-local Host headers (blocks DNS-rebinding from a
+        // website the user has open). Native Nova clients always send a local Host.
+        guard req.isLocalHost else { return json(403, ["error": "Forbidden"] as [String: Any]) }
         switch (req.method, req.path) {
         case ("GET", "/api/status"):
             return json(200, ["status": "running", "app": "NewsTV", "version": "1.0", "port": "\(port)", "uptimeSeconds": Int(Date().timeIntervalSince(startTime))] as [String: Any])
@@ -55,7 +57,12 @@ class NovaAPIServer {
         }
     }
     private struct NovaRequest {
-        let method: String; let path: String; let body: String
+        let method: String; let path: String; let body: String; let host: String
+        /// True when the Host header names the loopback interface; anything else is rejected.
+        var isLocalHost: Bool {
+            let name = host.hasPrefix("[") ? String(host.dropFirst().prefix { $0 != "]" }) : (host.components(separatedBy: ":").first ?? host)
+            return ["127.0.0.1", "localhost", "::1"].contains(name)
+        }
         func bodyJSON() -> [String: Any]? { guard let d = body.data(using: .utf8) else { return nil }; return try? JSONSerialization.jsonObject(with: d) as? [String: Any] }
         init?(_ data: Data) {
             guard let raw = String(data: data, encoding: .utf8), raw.contains("\r\n\r\n") else { return nil }
@@ -64,10 +71,10 @@ class NovaAPIServer {
             var hdrs: [String: String] = [:]; for l in lines.dropFirst() { let kv = l.components(separatedBy: ": "); if kv.count >= 2 { hdrs[kv[0].lowercased()] = kv.dropFirst().joined(separator: ": ") } }
             let rawBody = parts.dropFirst().joined(separator: "\r\n\r\n")
             if let cl = hdrs["content-length"], let n = Int(cl), rawBody.utf8.count < n { return nil }
-            method = tokens[0]; path = tokens[1].components(separatedBy: "?").first ?? tokens[1]; body = rawBody
+            method = tokens[0]; path = tokens[1].components(separatedBy: "?").first ?? tokens[1]; body = rawBody; host = hdrs["host"] ?? ""
         }
     }
     private func json(_ s: Int, _ d: [String: Any]) -> String { guard let data = try? JSONSerialization.data(withJSONObject: d, options: .prettyPrinted), let body = String(data: data, encoding: .utf8) else { return http(500, "") }; return http(s, body, "application/json") }
     private func jsonArray(_ s: Int, _ a: [[String: Any]]) -> String { guard let data = try? JSONSerialization.data(withJSONObject: a, options: .prettyPrinted), let body = String(data: data, encoding: .utf8) else { return http(500, "") }; return http(s, body, "application/json") }
-    private func http(_ s: Int, _ body: String, _ ct: String = "text/plain") -> String { let st = [200:"OK",201:"Created",400:"Bad Request",404:"Not Found",500:"Internal Server Error"][s] ?? "Unknown"; return "HTTP/1.1 \(s) \(st)\r\nContent-Type: \(ct); charset=utf-8\r\nContent-Length: \(body.utf8.count)\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n\(body)" }
+    private func http(_ s: Int, _ body: String, _ ct: String = "text/plain") -> String { let st = [200:"OK",201:"Created",400:"Bad Request",403:"Forbidden",404:"Not Found",500:"Internal Server Error"][s] ?? "Unknown"; return "HTTP/1.1 \(s) \(st)\r\nContent-Type: \(ct); charset=utf-8\r\nContent-Length: \(body.utf8.count)\r\nConnection: close\r\n\r\n\(body)" }
 }
